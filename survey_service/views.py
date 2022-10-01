@@ -44,18 +44,23 @@ class TestDetailView(generic.DetailView):
         context['form'] = TestForm(questions)
         return context
 
-    def post(self, request, *args, **kwargs):
-        questions = self.get_object().question_set.all()
+    def post(self, request, *args, **kwargs): # подумать над этой логикой
+        test = self.get_object()
+        questions = test.question_set.all()
+        user = request.user
         form = TestForm(questions, request.POST)
         if form.is_valid():
+            if test in user.passed_tests.all():
+                return redirect(reverse('survey_service:test_passed'))
             correct = 0
-            for key, value in form.cleaned_data.items():
+            for value in form.cleaned_data.values():
                 answer = Answer.objects.get(pk=int(value))
                 if answer.correct:
                     correct += 1
             if correct == len(form.cleaned_data):
-                request.user.currency += self.get_object().point
-                request.user.save()
+                user.currency += test.point
+                user.passed_tests.add(test)
+                user.save()
                 return redirect(reverse('survey_service:test_passed'))
         return redirect(reverse('survey_service:test_failed'))
 

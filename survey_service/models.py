@@ -4,6 +4,7 @@ from django.db import models
 
 class User(AbstractUser):
     currency = models.PositiveIntegerField(default=0, blank=True, verbose_name='currency')
+    passed_tests = models.ManyToManyField('Test', verbose_name='passed tests')
 
 
 class Test(models.Model):
@@ -14,6 +15,10 @@ class Test(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta:
+        verbose_name = 'Test'
+        verbose_name_plural = 'Tests'
+
 
 class Question(models.Model):
     text = models.CharField(max_length=400)
@@ -21,6 +26,10 @@ class Question(models.Model):
 
     def __str__(self):
         return self.text
+
+    class Meta:
+        verbose_name = 'Question'
+        verbose_name_plural = 'Questions'
 
 
 class Answer(models.Model):
@@ -30,3 +39,7 @@ class Answer(models.Model):
 
     def __str__(self):
         return self.text
+
+    class Meta:
+        verbose_name = 'Answer'
+        verbose_name_plural = 'Answers'
