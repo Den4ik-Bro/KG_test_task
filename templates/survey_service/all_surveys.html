@@ -9,8 +9,8 @@
 {% block content %}
 
     <div style="text-align:center">
-        {% for test in tests %}
-            <a href="{% url 'survey_service:detail_test' pk=test.pk %}"><p>{{ test }}</p></a>
+        {% for survey in surveys %}
+            <a href="{% url 'survey_service:detail_survey' pk=survey.pk %}"><p>{{ survey }}</p></a>
         {% endfor %}
     </div>
 

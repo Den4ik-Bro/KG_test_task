@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
-from .models import Test, Answer, Question
+from .models import Survey, Answer, Question
 
 User = get_user_model()
 
@@ -26,11 +26,11 @@ class RegistrationUserForm(forms.ModelForm):
             ]
 
 
-class TestForm(forms.Form):
+class SurveyForm(forms.Form):
     question = forms.ChoiceField(widget=forms.RadioSelect, choices=())
 
     def __init__(self, questions, *args, **kwargs):
-        super(TestForm, self).__init__(*args, **kwargs)
+        super(SurveyForm, self).__init__(*args, **kwargs)
         self.questions = questions
         del self.fields['question']
         for question in questions:
@@ -41,7 +41,7 @@ class TestForm(forms.Form):
 
 class BuyColorForm(forms.Form):
     CHOICES = [
-        ('green', '100'),
+        ('pink', '100'),
         ('black', '1000'),
         ('red', '700'),
         ('blue', '500'),

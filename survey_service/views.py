@@ -3,8 +3,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import generic
-from .models import Test, Answer
-from .forms import RegistrationUserForm, TestForm, BuyColorForm
+from .models import Survey, Answer
+from .forms import RegistrationUserForm, SurveyForm, BuyColorForm
 from django.contrib.auth import get_user_model
 
 
@@ -31,55 +31,55 @@ class HomeView(generic.TemplateView):
     template_name = 'survey_service/home.html'
 
 
-class TestListView(generic.ListView):
-    queryset = Test.objects.all()
-    template_name = 'survey_service/all_tests.html'
-    context_object_name = 'tests'
+class SurveyListView(generic.ListView):
+    queryset = Survey.objects.all()
+    template_name = 'survey_service/all_surveys.html'
+    context_object_name = 'surveys'
 
 
-class TestDetailView(LoginRequiredMixin, generic.DetailView):
-    queryset = Test.objects.all()
-    template_name = 'survey_service/detail_test.html'
-    context_object_name = 'test'
+class SurveyDetailView(LoginRequiredMixin, generic.DetailView):
+    queryset = Survey.objects.all()
+    template_name = 'survey_service/detail_survey.html'
+    context_object_name = 'survey'
 
     def get_context_data(self, **kwargs):
         questions = self.get_object().question_set.all()
-        context = super(TestDetailView, self).get_context_data()
-        context['form'] = TestForm(questions)
+        context = super(SurveyDetailView, self).get_context_data()
+        context['form'] = SurveyForm(questions)
         return context
 
     def post(self, request, *args, **kwargs): # подумать над этой логикой
-        test = self.get_object()
-        questions = test.question_set.all()
+        survey = self.get_object()
+        questions = survey.question_set.all()
         user = request.user
-        form = TestForm(questions, request.POST)
+        form = SurveyForm(questions, request.POST)
         if form.is_valid():
-            if test in user.passed_tests.all():
-                return redirect(reverse('survey_service:test_passed'))
+            if survey in user.passed_surveys.all():
+                return redirect(reverse('survey_service:survey_passed'))
             correct = 0
             for value in form.cleaned_data.values():
                 answer = Answer.objects.get(pk=int(value))
                 if answer.correct:
                     correct += 1
             if correct == len(form.cleaned_data):
-                user.currency += test.point
-                user.passed_tests.add(test)
+                user.currency += survey.point
+                user.passed_surveys.add(survey)
                 user.save()
-                return redirect(reverse('survey_service:test_passed'))
-        return redirect(reverse('survey_service:test_failed'))
+                return redirect(reverse('survey_service:survey_passed'))
+        return redirect(reverse('survey_service:survey_failed'))
 
 
-class TestPassed(LoginRequiredMixin, generic.TemplateView):
-    template_name = 'survey_service/test_passed.html'
+class SurveyPassedView(LoginRequiredMixin, generic.TemplateView):
+    template_name = 'survey_service/survey_passed.html'
 
     def get_context_data(self, **kwargs):
-        context = super(TestPassed, self).get_context_data()
+        context = super(SurveyPassedView, self).get_context_data()
         context['point'] = self.request.user.currency
         return context
 
 
-class TestFailed(LoginRequiredMixin, generic.TemplateView):
-    template_name = 'survey_service/test_failed.html'
+class SurveyFailedView(LoginRequiredMixin, generic.TemplateView):
+    template_name = 'survey_service/survey_failed.html'
 
 
 class ProfileView(generic.DetailView):
@@ -89,7 +89,7 @@ class ProfileView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(ProfileView, self).get_context_data()
-        context['tests'] = self.request.user.passed_tests.all()
+        context['tests'] = self.request.user.passed_surveys.all()
         context['color'] = self.request.user.color
         context['form'] = BuyColorForm()
         return context

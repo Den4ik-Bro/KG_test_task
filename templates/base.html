@@ -19,7 +19,7 @@
     <ul class="navbar-nav">
         {% if request.user.is_authenticated %}
             <li class="nav-item active">
-                <a class="nav-link" href="{% url 'survey_service:all_tests' %}">Тесты</a>
+                <a class="nav-link" href="{% url 'survey_service:all_surveys' %}">Тесты</a>
             </li>
             <li class="nav-item active">
                 <a class="nav-link" href="{% url 'survey_service:profile' pk=request.user.pk %}">Профиль</a>
@@ -29,7 +29,7 @@
             </li>
         {% else %}
             <li class="nav-item active">
-                <a class="nav-link" href="#">Регистрация</a>
+                <a class="nav-link" href="/register/">Регистрация</a>
             </li>
              <li class="nav-item">
                 <a class="nav-link" href="/login/">Вход</a>
