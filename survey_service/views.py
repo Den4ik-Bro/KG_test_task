@@ -86,6 +86,7 @@ class ProfileListView(generic.ListView):
     queryset = User.objects.all()
     context_object_name = 'users'
     template_name = 'survey_service/profile_list.html'
+    paginate_by = 20
 
 
 class ProfileDetailView(generic.DetailView):
