@@ -100,13 +100,13 @@ class ProfileDetailView(generic.DetailView):
         return context
 
 
-class ColorListView(generic.ListView):
+class ColorListView(LoginRequiredMixin, generic.ListView):
     queryset = Color.objects.all()
     template_name = 'survey_service/colors.html'
     context_object_name = 'colors'
 
 
-class BuyColorView(generic.View):
+class BuyColorView(LoginRequiredMixin, generic.View):
 
     def post(self, request, *args, **kwargs):
         user = request.user
@@ -119,5 +119,5 @@ class BuyColorView(generic.View):
         return redirect(reverse('survey_service:buy_failed'))
 
 
-class BuyFailedView(generic.TemplateView):
+class BuyFailedView(LoginRequiredMixin, generic.TemplateView):
     template_name = 'survey_service/buy_failed.html'
