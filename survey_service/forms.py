@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
-from .models import Survey, Answer, Question
+from .models import Survey, Answer, Question, Color
 
 User = get_user_model()
 
@@ -37,14 +37,3 @@ class SurveyForm(forms.Form):
             choices = [(answer.pk, answer.text ) for answer in question.answer_set.all()]
             self.fields[f'question{question.pk}'] = forms.ChoiceField(widget=forms.RadioSelect, choices=choices)
             self.fields[f'question{question.pk}'].label = question.text
-
-
-class BuyColorForm(forms.Form):
-    CHOICES = [
-        ('pink', '100'),
-        ('black', '1000'),
-        ('red', '700'),
-        ('blue', '500'),
-        ('white', '1500'),
-    ]
-    color = forms.MultipleChoiceField(widget=forms.RadioSelect, choices=CHOICES)

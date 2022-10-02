@@ -1,10 +1,10 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views import generic
-from .models import Survey, Answer
-from .forms import RegistrationUserForm, SurveyForm, BuyColorForm
+from .models import Survey, Answer, Color
+from .forms import RegistrationUserForm, SurveyForm
 from django.contrib.auth import get_user_model
 
 
@@ -82,23 +82,42 @@ class SurveyFailedView(LoginRequiredMixin, generic.TemplateView):
     template_name = 'survey_service/survey_failed.html'
 
 
-class ProfileView(generic.DetailView):
+class ProfileListView(generic.ListView):
+    queryset = User.objects.all()
+    context_object_name = 'users'
+    template_name = 'survey_service/profile_list.html'
+
+
+class ProfileDetailView(generic.DetailView):
     template_name = 'survey_service/profile.html'
     model = User
     context_object_name = 'user'
 
     def get_context_data(self, **kwargs):
-        context = super(ProfileView, self).get_context_data()
+        context = super(ProfileDetailView, self).get_context_data()
         context['tests'] = self.request.user.passed_surveys.all()
         context['color'] = self.request.user.color
-        context['form'] = BuyColorForm()
         return context
 
+
+class ColorListview(generic.ListView):
+    queryset = Color.objects.all()
+    template_name = 'survey_service/colors.html'
+    context_object_name = 'colors'
+
+
+class BuyColorView(generic.View):
+
     def post(self, request, *args, **kwargs):
-        form = BuyColorForm(request.POST)
         user = request.user
-        print(request.POST)
-        if form.is_valid():
-            print('ok')
-        print(form.errors)
-        return redirect(reverse('survey_service:profile', kwargs={'pk': request.user.pk}))
+        color = get_object_or_404(Color, pk=kwargs['pk'])
+        if user.currency >= color.price and user.color != color.color:
+            user.currency -= color.price
+            user.color = color.color
+            user.save()
+            return redirect(reverse('survey_service:profile', kwargs={'pk': request.user.pk}))
+        return redirect(reverse('survey_service:buy_failed'))
+
+
+class BuyFailedView(generic.TemplateView):
+    template_name = 'survey_service/buy_failed.html'

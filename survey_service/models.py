@@ -8,6 +8,21 @@ class User(AbstractUser):
     color = models.CharField(max_length=50, default='green', blank=True, verbose_name='color')
 
 
+class Color(models.Model):
+    COLOR_CHOICES = [
+        ('Pink', 'pink'),
+        ('Blue', 'blue'),
+        ('White', 'white'),
+        ('Yellow', 'yellow'),
+        ('Black', 'black'),
+    ]
+    color = models.CharField(choices=COLOR_CHOICES, max_length=25, verbose_name='color')
+    price = models.PositiveIntegerField(verbose_name='price')
+
+    def __str__(self):
+        return self.color
+
+
 class Survey(models.Model):
     title = models.CharField(max_length=150)
     description = models.CharField(max_length=500, blank=True)

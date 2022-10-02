@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    Пользователи
+{% endblock %}
+
+
+{% block content %}
+    <div style="text-align:center">
+        <table class="table table-dark table-striped" border="1px" align="center" >
+            <tr>
+                <th>Имя</th>
+                <th>Пройденные тесты</th>
+                <th>Цвет</th>
+            </tr>
+            {% for user in users %}
+                <tr>
+                    <th>
+                        <a href="{% url 'survey_service:profile' pk=user.pk%}">{{ user.username }}</a>
+                    </th>
+                    <th>
+                        {{ user.passed_surveys.count }}
+                    </th>
+                    <th>
+                        {{ user.color }}
+                    </th>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

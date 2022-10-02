@@ -24,14 +24,6 @@
                 <h3>Ваш цвет:</h3>
                 <p>{{ color }}</p>
             </div>
-            <div style="text-align:center">
-                <h3>Купить другой цвет</h3>
-                <form action="." method="POST">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <input type="submit" value="Купить">
-                </form>
-            </div>
         </div>
     </div>
 {% endblock %}
