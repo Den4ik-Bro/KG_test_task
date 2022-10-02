@@ -13,7 +13,7 @@ urlpatterns = [
     path('survey_failed', views.SurveyFailedView.as_view(), name='survey_failed'),
     path('profiles', views.ProfileListView.as_view(), name='profile_list'),
     path('profile/<int:pk>/', views.ProfileDetailView.as_view(), name='profile'),
-    path('colors/', views.ColorListview.as_view(), name='colors'),
+    path('colors/', views.ColorListView.as_view(), name='colors'),
     path('buy_color/<int:pk>/', views.BuyColorView.as_view(), name='buy_color'),
     path('buy_failed/', views.BuyFailedView.as_view(), name='buy_failed'),
 ]
