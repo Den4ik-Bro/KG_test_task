@@ -11,4 +11,5 @@ urlpatterns = [
     path('test/<int:pk>/', views.TestDetailView.as_view(), name='detail_test'),
     path('test_passed', views.TestPassed.as_view(), name='test_passed'),
     path('test_failed', views.TestFailed.as_view(), name='test_failed'),
+    path('profile/<int:pk>/', views.ProfileView.as_view(), name='profile')
 ]

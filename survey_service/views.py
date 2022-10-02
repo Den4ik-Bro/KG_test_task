@@ -1,10 +1,14 @@
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import generic
 from .models import Test, Answer
+from .forms import RegistrationUserForm, TestForm, BuyColorForm
+from django.contrib.auth import get_user_model
 
-from .forms import RegistrationUserForm, TestForm
+
+User = get_user_model()
 
 
 class RegistrationFormView(generic.FormView):
@@ -33,7 +37,7 @@ class TestListView(generic.ListView):
     context_object_name = 'tests'
 
 
-class TestDetailView(generic.DetailView):
+class TestDetailView(LoginRequiredMixin, generic.DetailView):
     queryset = Test.objects.all()
     template_name = 'survey_service/detail_test.html'
     context_object_name = 'test'
@@ -65,7 +69,7 @@ class TestDetailView(generic.DetailView):
         return redirect(reverse('survey_service:test_failed'))
 
 
-class TestPassed(generic.TemplateView):
+class TestPassed(LoginRequiredMixin, generic.TemplateView):
     template_name = 'survey_service/test_passed.html'
 
     def get_context_data(self, **kwargs):
@@ -74,5 +78,27 @@ class TestPassed(generic.TemplateView):
         return context
 
 
-class TestFailed(generic.TemplateView):
+class TestFailed(LoginRequiredMixin, generic.TemplateView):
     template_name = 'survey_service/test_failed.html'
+
+
+class ProfileView(generic.DetailView):
+    template_name = 'survey_service/profile.html'
+    model = User
+    context_object_name = 'user'
+
+    def get_context_data(self, **kwargs):
+        context = super(ProfileView, self).get_context_data()
+        context['tests'] = self.request.user.passed_tests.all()
+        context['color'] = self.request.user.color
+        context['form'] = BuyColorForm()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = BuyColorForm(request.POST)
+        user = request.user
+        print(request.POST)
+        if form.is_valid():
+            print('ok')
+        print(form.errors)
+        return redirect(reverse('survey_service:profile', kwargs={'pk': request.user.pk}))

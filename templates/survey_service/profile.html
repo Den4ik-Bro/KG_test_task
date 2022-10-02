@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    {{ user.username }}
+{% endblock %}
+
+
+{% block content %}
+<h1 style="text-align:center">Привет {{ user.username }}!</h1><br>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h3>Тесты которые вы прошли:</h3>
+                {% for test in tests %}
+                    <p>{{ test }}</p>
+                {% endfor %}
+            </div>
+            <div class="col">
+                <h3>Количество баллов:</h3>
+                <p>{{ user.currency }}</p>
+            </div>
+            <div class="col">
+                <h3>Ваш цвет:</h3>
+                <p>{{ color }}</p>
+            </div>
+            <div style="text-align:center">
+                <h3>Купить другой цвет</h3>
+                <form action="." method="POST">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <input type="submit" value="Купить">
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

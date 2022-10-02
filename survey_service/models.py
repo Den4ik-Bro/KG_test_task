@@ -5,6 +5,7 @@ from django.db import models
 class User(AbstractUser):
     currency = models.PositiveIntegerField(default=0, blank=True, verbose_name='currency')
     passed_tests = models.ManyToManyField('Test', verbose_name='passed tests')
+    color = models.CharField(max_length=50, blank=True, verbose_name='color')
 
 
 class Test(models.Model):
