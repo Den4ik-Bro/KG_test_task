@@ -100,7 +100,7 @@ class ProfileDetailView(generic.DetailView):
         return context
 
 
-class ColorListview(generic.ListView):
+class ColorListView(generic.ListView):
     queryset = Color.objects.all()
     template_name = 'survey_service/colors.html'
     context_object_name = 'colors'
