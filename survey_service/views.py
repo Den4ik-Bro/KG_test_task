@@ -92,11 +92,11 @@ class ProfileDetailView(LoginRequiredMixin, generic.DetailView):
     model = User
     context_object_name = 'user'
 
-    def get_context_data(self, **kwargs):
-        context = super(ProfileDetailView, self).get_context_data()
-        context['passed_surveys'] = self.request.user.passed_surveys.all()
-        context['color'] = self.request.user.color
-        return context
+    # def get_context_data(self, **kwargs):
+    #     context = super(ProfileDetailView, self).get_context_data()
+    #     # context['passed_surveys'] = self.request.user.passed_surveys.all()
+    #     context['color'] = self.request.user.color
+    #     return context
 
 
 class ColorListView(LoginRequiredMixin, generic.ListView):

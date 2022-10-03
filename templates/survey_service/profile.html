@@ -12,7 +12,7 @@
         <div class="row">
             <div class="col">
                 <h3>Тесты которые вы прошли:</h3>
-                {% for survey in passed_surveys %}
+                {% for survey in user.passed_surveys.all %}
                     <p>{{ survey }}</p>
                 {% endfor %}
             </div>
@@ -22,7 +22,7 @@
             </div>
             <div class="col">
                 <h3>Ваш цвет:</h3>
-                <p>{{ color }}</p>
+                <p>{{ user.color }}</p>
             </div>
         </div>
     </div>
