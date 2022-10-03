@@ -56,16 +56,14 @@ class SurveyDetailView(LoginRequiredMixin, generic.DetailView):
         if form.is_valid():
             if survey in user.passed_surveys.all():
                 return redirect(reverse('survey_service:survey_passed'))
-            correct = 0
             for value in form.cleaned_data.values():
                 answer = Answer.objects.get(pk=int(value))
-                if answer.correct:
-                    correct += 1
-            if correct == len(form.cleaned_data):
-                user.currency += survey.point
-                user.passed_surveys.add(survey)
-                user.save()
-                return redirect(reverse('survey_service:survey_passed'))
+                if not answer.correct:
+                    return redirect(reverse('survey_service:survey_failed'))
+            user.currency += survey.point
+            user.passed_surveys.add(survey)
+            user.save()
+            return redirect(reverse('survey_service:survey_passed'))
         return redirect(reverse('survey_service:survey_failed'))
 
 
@@ -89,14 +87,14 @@ class ProfileListView(generic.ListView):
     paginate_by = 20
 
 
-class ProfileDetailView(generic.DetailView):
+class ProfileDetailView(LoginRequiredMixin, generic.DetailView):
     template_name = 'survey_service/profile.html'
     model = User
     context_object_name = 'user'
 
     def get_context_data(self, **kwargs):
         context = super(ProfileDetailView, self).get_context_data()
-        context['tests'] = self.request.user.passed_surveys.all()
+        context['passed_surveys'] = self.request.user.passed_surveys.all()
         context['color'] = self.request.user.color
         return context
 
@@ -112,9 +110,10 @@ class BuyColorView(LoginRequiredMixin, generic.View):
     def post(self, request, *args, **kwargs):
         user = request.user
         color = get_object_or_404(Color, pk=kwargs['pk'])
-        if user.currency >= color.price and user.color != color.color:
+        if user.currency >= color.price and color not in user.user_colors.all():
             user.currency -= color.price
             user.color = color.color
+            user.user_colors.add(color)
             user.save()
             return redirect(reverse('survey_service:profile', kwargs={'pk': request.user.pk}))
         return redirect(reverse('survey_service:buy_failed'))

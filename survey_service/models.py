@@ -4,8 +4,11 @@ from django.db import models
 
 class User(AbstractUser):
     currency = models.PositiveIntegerField(default=0, blank=True, verbose_name='currency')
-    passed_surveys = models.ManyToManyField('Survey', verbose_name='passed survey')
+    passed_surveys = models.ManyToManyField('Survey', blank=True, verbose_name='passed survey')
     color = models.CharField(max_length=50, default='green', blank=True, verbose_name='color')
+    # user_colors для того, что бы уже купленный цвет сохранялся у пользователя
+    # и можно было бы сделать метод update и там их менять
+    user_colors = models.ManyToManyField('Color', blank=True, verbose_name='user color list')
 
 
 class Color(models.Model):
@@ -38,7 +41,7 @@ class Survey(models.Model):
 
 class Question(models.Model):
     text = models.CharField(max_length=400)
-    test = models.ForeignKey(Survey, on_delete=models.PROTECT)
+    survey = models.ForeignKey(Survey, on_delete=models.PROTECT)
 
     def __str__(self):
         return self.text

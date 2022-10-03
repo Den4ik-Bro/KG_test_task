@@ -34,6 +34,6 @@ class SurveyForm(forms.Form):
         self.questions = questions
         del self.fields['question']
         for question in questions:
-            choices = [(answer.pk, answer.text ) for answer in question.answer_set.all()]
+            choices = [(answer.pk, answer.text) for answer in question.answer_set.all()]
             self.fields[f'question{question.pk}'] = forms.ChoiceField(widget=forms.RadioSelect, choices=choices)
             self.fields[f'question{question.pk}'].label = question.text

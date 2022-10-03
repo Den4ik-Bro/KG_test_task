@@ -12,8 +12,8 @@
         <div class="row">
             <div class="col">
                 <h3>Тесты которые вы прошли:</h3>
-                {% for test in tests %}
-                    <p>{{ test }}</p>
+                {% for survey in passed_surveys %}
+                    <p>{{ survey }}</p>
                 {% endfor %}
             </div>
             <div class="col">
